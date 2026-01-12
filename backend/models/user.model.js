@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import validator from "validator"
 const userSchema = new mongoose.Schema({
     fullName: {
         type: String,
@@ -9,9 +9,19 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
+        validate(value) {
+            if (!validator.isEmail(value)) {
+                throw new Error("invalid.. email" + value)
+            }
+        }
     },
     password: {
-        type: String
+        type: String,
+        validate(value) {
+            if (!validator.isStrongPassword(value)) {
+                throw new Error("create strong password" + value)
+            }
+        }
     },
     mobile: {
         type: String,
@@ -21,6 +31,17 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ["user", "owner", "deliveryBoy"],
         required: true
+    },
+    resetOtp: {
+        type: String
+
+    },
+    isOtpVerified: {
+        type: Boolean,
+        default: false
+    },
+    otpExpires: {
+        type: Date
     }
 }, { timestamps: true })
 const User = mongoose.model("User", userSchema)

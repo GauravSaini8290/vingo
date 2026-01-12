@@ -5,19 +5,21 @@ import { FaRegEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../../firebase";
 const SignUp = () => {
   const primarycolor = "#ff4d2d";
   const hoverColor = "#e64323";
   const bgColor = "#fff9f4";
   const borderColor = "#ddd";
   const [showPassword, setShowPassword] = useState(false);
-  const [fullName, setFullName] = useState("gaurav saini");
-  const [email, setEmail] = useState("gaurav@1234gmail.com");
-  const [password, setPassword] = useState("12345678");
-  const [mobile, setMobile] = useState("8745670978");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [mobile, setMobile] = useState("");
   const [role, setRole] = useState("user");
-  const[err ,setErr] = useState("")
-console.log(err)
+  const [err, setErr] = useState("");
+  console.log(err);
   const signUpApi = async () => {
     try {
       const res = await axios.post(
@@ -25,15 +27,34 @@ console.log(err)
         { fullName, email, password, mobile, role },
         { withCredentials: true }
       );
-      setErr("")
+      setErr("");
     } catch (error) {
-        const msg =
-    error?.response?.data?.message || "Something went wrong";
-  setErr(msg);
+      const msg = error?.response?.data?.message || "Something went wrong";
+      setErr(msg);
       console.log(error.message);
     }
   };
-  
+  const handleGoogle = async () => {
+    if (!mobile) return alert("enter mobile number");
+    const provider = new GoogleAuthProvider();
+    const res = await signInWithPopup(auth, provider);
+    try {
+      const data = await axios.post(
+        ServerUrl + "/api/auth/google-auth",
+        {
+          fullName: res?.user?.displayName,
+          email: res?.user?.email,
+          role,
+          mobile,
+        },
+        { withCredentials: true }
+      );
+      console.log(data)
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div
       className="min-h-screen w-full flex items-center justify-center "
@@ -120,8 +141,9 @@ console.log(err)
         <div className="mb-4 ">
           <label className="block text-gray-700 font-medium mb-1">Role</label>
           <div className="flex gap-2">
-            {["user", "owner", "deliveryBoy"].map((r,index) => (
-              <button key={index}
+            {["user", "owner", "deliveryBoy"].map((r, index) => (
+              <button
+                key={index}
                 className="flex-1 border rounded-lg px-3 py-2 text-center font-medium transition-colors cursor-pointer "
                 onClick={() => {
                   setRole(r);
@@ -137,10 +159,16 @@ console.log(err)
             ))}
           </div>
         </div>
-        <button className="w-full mt-4 flex items-center justify-center gap-2 text-white border rounded-lg px-4 py-2 transition duration-200 bg-[#ff4d2d] hover:bg-[#e64323] cursor-pointer" onClick={signUpApi}>
+        <button
+          className="w-full mt-4 flex items-center justify-center gap-2 text-white border rounded-lg px-4 py-2 transition duration-200 bg-[#ff4d2d] hover:bg-[#e64323] cursor-pointer"
+          onClick={signUpApi}
+        >
           sign Up
         </button>
-        <button className="w-full mt-4 flex items-center justify-center gap-2 border rounded-lg px-4 py-2 transition duration-200 border-gray-400 bg-gray-300 hover:bg-gray-200 cursor-pointer">
+        <button
+          className="w-full mt-4 flex items-center justify-center gap-2 border rounded-lg px-4 py-2 transition duration-200 border-gray-400 bg-gray-300 hover:bg-gray-200 cursor-pointer"
+          onClick={handleGoogle}
+        >
           <FcGoogle size={20} />
           <span>Sign up with Google</span>
         </button>
