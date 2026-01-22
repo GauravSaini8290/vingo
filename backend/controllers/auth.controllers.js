@@ -8,7 +8,9 @@ export const SignUp = async (req, res) => {
         if (!fullName || !email || !password || !mobile) {
             return res.status(400).json({ message: "All fields are required" });
         }
-        const findUser = await User.findOne({ email })
+        const normalizedEmail = email.toLowerCase();
+
+        const findUser = await User.findOne({ email: normalizedEmail })
         if (findUser) {
             return res.status(400).json({ message: " User already exists" })
         }
@@ -25,7 +27,6 @@ export const SignUp = async (req, res) => {
         const token = await jwtToken(user._id)
         res.cookie("token", token, {
             secure: false,
-            sameSite: "strict",
             maxAge: 7 * 24 * 60 * 60 * 1000,
             httpOnly: true
         })
@@ -52,7 +53,8 @@ export const SignIn = async (req, res) => {
         if (!email || !password) {
             return res.status(400).json({ message: "All fields are required" });
         }
-        const findUser = await User.findOne({ email })
+        const normalizedEmail = email.toLowerCase();
+        const findUser = await User.findOne({ email: normalizedEmail })
         if (!findUser) {
             return res.status(400).json({ message: " User dose not exist," })
         }
@@ -64,7 +66,6 @@ export const SignIn = async (req, res) => {
         const token = await jwtToken(findUser._id)
         res.cookie("token", token, {
             secure: false,
-            sameSite: "strict",
             maxAge: 7 * 24 * 60 * 60 * 1000,
             httpOnly: true
         })
@@ -87,8 +88,12 @@ export const SignIn = async (req, res) => {
 
 export const SignOut = async (req, res) => {
     try {
-        res.clearCookie("token")
-        res.status(200).json({ message: "Logout" })
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: false
+        })
+        return res.status(200).json({ message: "Logout successful" });
+
     } catch (error) {
         return res.status(500).json({ message: "SignOut error", error: error.message });
     }
@@ -139,6 +144,9 @@ export const VerifyOtp = async (req, res) => {
 export const ResetPassword = async (req, res) => {
     try {
         const { email, newPassword } = req.body
+        if (newPassword.length < 6) {
+            return res.status(400).json({ message: "Password must be at least 6 characters" })
+        }
         const user = await User.findOne({ email })
         if (!user || !user.isOtpVerified) {
             return res.status(400).json({ message: " otp varification required" })
@@ -158,18 +166,17 @@ export const ResetPassword = async (req, res) => {
 
 export const GoogleAuth = async (req, res) => {
     try {
-        const { fullName, email, mobile,role } = req.body
+        const { fullName, email, mobile, role } = req.body
         let user = await User.findOne({ email })
         if (!user) {
             user = await User.create({
-                fullName, email, mobile,role
+                email
             })
         }
 
-         const token = await jwtToken(user._id)
+        const token = await jwtToken(user._id)
         res.cookie("token", token, {
             secure: false,
-            sameSite: "strict",
             maxAge: 7 * 24 * 60 * 60 * 1000,
             httpOnly: true
         })
@@ -183,6 +190,6 @@ export const GoogleAuth = async (req, res) => {
             },
         });
     } catch (error) {
-return res.status(500).json({ message: ` Google auth error: ${error}` })
+        return res.status(500).json({ message: ` Google auth error: ${error}` })
     }
 }

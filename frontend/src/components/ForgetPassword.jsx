@@ -11,44 +11,51 @@ const ForgetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [otp, setOtp] = useState("");
+  const [loading, setLoading] = useState(false);
   const handleSendOtp = async () => {
+    setLoading(true);
     try {
       const res = await axios.post(
         ServerUrl + "/api/auth/send-otp",
         { email },
-        { withCredentials: true }
+        { withCredentials: true },
       );
-
+      setLoading(false);
       setStep(2);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
   const handleVerifyOtp = async () => {
+    setLoading(true);
     try {
       const res = await axios.post(
         ServerUrl + "/api/auth/verify-otp",
         { email, otp },
-        { withCredentials: true }
+        { withCredentials: true },
       );
-
+      setLoading(false);
       setStep(3);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
   const handleResetPassword = async () => {
     if (newPassword !== confirmPassword) return null;
+    setLoading(true);
     try {
       const res = await axios.post(
         ServerUrl + "/api/auth/reset-password",
         { email, newPassword },
-        { withCredentials: true }
+        { withCredentials: true },
       );
-
+      setLoading(false);
       navigate("/signin");
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
   return (
@@ -83,8 +90,9 @@ const ForgetPassword = () => {
             <button
               className="w-full mt-4 flex items-center justify-center gap-2 text-white border rounded-lg px-4 py-2 transition duration-200 bg-[#ff4d2d] hover:bg-[#e64323] cursor-pointer"
               onClick={handleSendOtp}
+              disabled={loading}
             >
-              Send OTP
+              {loading ? <ClipLoader size={20} color="#fff" /> : "Send OTP"}
             </button>
           </div>
         )}
@@ -107,9 +115,10 @@ const ForgetPassword = () => {
             </div>
             <button
               className="w-full mt-4 flex items-center justify-center gap-2 text-white border rounded-lg px-4 py-2 transition duration-200 bg-[#ff4d2d] hover:bg-[#e64323] cursor-pointer"
-              onClick={handleVerifyOtp}
+              onClick={handleVerifyOtp} disabled={loading}
             >
-              Verify OTP
+              
+              {loading ? <ClipLoader size={20} color="#fff" /> : "Verify OTP"}
             </button>
           </div>
         )}
@@ -147,9 +156,14 @@ const ForgetPassword = () => {
             </div>
             <button
               className="w-full mt-4 flex items-center justify-center gap-2 text-white border rounded-lg px-4 py-2 transition duration-200 bg-[#ff4d2d] hover:bg-[#e64323] cursor-pointer"
-              onClick={handleResetPassword}
+              onClick={handleResetPassword} disabled={loading}
             >
-              Reset password
+              
+              {loading ? (
+                <ClipLoader size={20} color="#fff" />
+              ) : (
+                "Reset password"
+              )}
             </button>
           </div>
         )}
