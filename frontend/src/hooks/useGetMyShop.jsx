@@ -8,7 +8,7 @@ const useGetMyShop = () => {
   const dispatch = useDispatch();
   const fetchShop = async () => {
     try {
-      const res = await axios.get(ServerUrl + "/api/shop//getMyShop", {
+      const res = await axios.get(ServerUrl + "/api/shop/getMyShop", {
         withCredentials: true,
       });
       dispatch(setMyShopData(res.data));

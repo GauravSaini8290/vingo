@@ -1,10 +1,11 @@
 import axios from "axios";
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { setCity } from "../redux/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setCity, setCurrentAddress, setstate } from "../redux/userSlice";
 
 const useGetCity = () => {
   const dispatch = useDispatch();
+  const { userData } = useSelector((store) => store.user);
   const apiKey = import.meta.env.VITE_GIOAPIKEY;
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(async (position) => {
@@ -15,8 +16,15 @@ const useGetCity = () => {
       );
 
       dispatch(setCity(res?.data?.results?.[0]?.city));
+      dispatch(setstate(res?.data?.results?.[0]?.state));
+      dispatch(
+        setCurrentAddress(
+          res?.data?.results?.[0]?.address_line2 ||
+            res?.data?.results?.[0]?.address_line1,
+        ),
+      );
     });
-  }, []);
+  }, [userData]);
 };
 
 export default useGetCity;

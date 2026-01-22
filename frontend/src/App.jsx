@@ -11,6 +11,7 @@ import { setUserData } from "./redux/userSlice";
 import useGetCity from "./hooks/useGetCity";
 import useGetMyShop from "./hooks/useGetMyShop";
 import CreateEditShop from "./components/CreateEditShop";
+import AddItems from "./components/AddItems";
 export const ServerUrl = "http://localhost:8000";
 
 const App = () => {
@@ -70,6 +71,10 @@ const App = () => {
       <Route
         path="/create-edit-shop"
         element={userData ? <CreateEditShop /> : <Navigate to="/signin" replace />}
+      />
+      <Route
+        path="/Add-food"
+        element={userData ? <AddItems /> : <Navigate to="/signin" replace />}
       />
     </Routes>
   );
