@@ -6,6 +6,7 @@ import { GiForkKnifeSpoon } from "react-icons/gi";
 import axios from "axios";
 import { ServerUrl } from "../App";
 import { setMyShopData } from "../redux/ownerSlice";
+import { ClipLoader } from "react-spinners";
 
 const CreateEditShop = () => {
   const dispatch = useDispatch();
@@ -14,6 +15,7 @@ const CreateEditShop = () => {
   const { location, State, currentAddress } = useSelector(
     (store) => store.user,
   );
+  const [loading, setLoading] = useState(false);
 
   const [name, setName] = useState("");
   const [city, setCity] = useState("");
@@ -46,6 +48,7 @@ const CreateEditShop = () => {
       alert("All fields including image are required!");
       return;
     }
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("name", name);
@@ -60,10 +63,13 @@ const CreateEditShop = () => {
         formData,
         { withCredentials: true },
       );
+
       dispatch(setMyShopData(res.data));
-      navigate("/")
+      setLoading(false);
+      navigate("/");
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -166,9 +172,10 @@ const CreateEditShop = () => {
           <button
             type="button"
             onClick={handleSubmit}
-            className="w-full bg-[#ff4d2d] text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:bg-orange-600 hover:shadow-lg transition-all duration-200"
+            className="w-full bg-[#ff4d2d] text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:bg-orange-600 hover:shadow-lg transition-all duration-200 cursor-pointer"
+            disabled={loading}
           >
-            Save
+            {loading ? <ClipLoader size={20} color="white"/> : "Save"}
           </button>
         </form>
       </div>

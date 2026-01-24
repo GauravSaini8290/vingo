@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IoMdArrowBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { GiForkKnifeSpoon } from "react-icons/gi";
 import axios from "axios";
 import { ServerUrl } from "../App";
+import { ClipLoader } from "react-spinners";
+import { useDispatch } from "react-redux";
 import { setMyShopData } from "../redux/ownerSlice";
 
 const AddItems = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { shopData } = useSelector((store) => store.owner);
+  const dispatch = useDispatch();
   const [Category, setCategory] = useState("");
   const [foodType, setFoodType] = useState("veg");
   const category = [
@@ -30,6 +30,7 @@ const AddItems = () => {
   const [frontendImage, setFrontendImage] = useState(null);
   const [backendImage, setBackendImage] = useState(null);
   const [price, setPrice] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const handleImage = (e) => {
     const file = e.target.files[0];
@@ -41,6 +42,7 @@ const AddItems = () => {
       alert("All fields including image are required!");
       return;
     }
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("name", name);
@@ -51,26 +53,25 @@ const AddItems = () => {
       if (backendImage) {
         formData.append("image", backendImage);
       }
-      const res = await axios.post(
-        ServerUrl + "/api/item/add-item",
-        formData,
-        { withCredentials: true },
-      );
-      console.log(res)
-    //   dispatch(setMyShopData(res.data));
+      const res = await axios.post(ServerUrl + "/api/item/add-item", formData, {
+        withCredentials: true,
+      });
+      dispatch(setMyShopData(res.data));
+      setLoading(false);
       navigate("/");
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
   return (
     <div className="flex justify-center flex-col items-center p-6 bg-gradient-to-br from-orange-50 relative to-white min-h-screen">
       <div
-        className="absolute top-[20px] left-[20px] z-[10] mb-[10px] cursor-pointer "
-        onClick={() => navigate("/")}
+        className="absolute top-[20px] left-[20px] z-[10]  pointer-events-none"
+       
       >
-        <IoMdArrowBack size={30} className="text-[#ff4d2d]" />
+        <IoMdArrowBack size={30}   className="text-[#ff4d2d] cursor-pointer pointer-events-auto" onClick={() => navigate("/")}/>
       </div>
       <div className="max-w-lg w-full bg-white shadow-xl rounded-2xl p-8 border-orange-100">
         <div className="flex flex-col items-center mb-6">
@@ -156,20 +157,18 @@ const AddItems = () => {
               }}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
-      
-            
-                <option value={"veg"}>veg</option>
-                <option value={"non veg"}>non veg</option>
-           
+              <option value={"veg"}>veg</option>
+              <option value={"nonveg"}>nonveg</option>
             </select>
           </div>
 
           <button
             type="button"
             onClick={handleSubmit}
-            className="w-full bg-[#ff4d2d] text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:bg-orange-600 hover:shadow-lg transition-all duration-200"
+            className="relative z-20 w-full bg-[#ff4d2d] text-white px-6 py-3 rounded-lg cursor-pointer"
+            disabled={loading}
           >
-            Save
+            {loading ? <ClipLoader size={20} color="white"/> : "Save"}
           </button>
         </form>
       </div>

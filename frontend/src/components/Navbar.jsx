@@ -84,11 +84,17 @@ const Navbar = () => {
           <>
             {shopData && (
               <>
-                <button className="hidden md:flex itmes-center gap-3 p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] ">
+                <button
+                  className="hidden md:flex itmes-center gap-3 p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] "
+                  onClick={() => navigate("/Add-food")}
+                >
                   <FaPlus size={20} />
                   <span> Add food items</span>
                 </button>
-                <button className="md:hidden  flex itmes-center p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] ">
+                <button
+                  className="md:hidden  flex itmes-center p-2 cursor-pointer rounded-full bg-[#ff4d2d]/10 text-[#ff4d2d] "
+                  onClick={() => navigate("/Add-food")}
+                >
                   <FaPlus size={20} />
                 </button>
               </>

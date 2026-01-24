@@ -12,11 +12,16 @@ import useGetCity from "./hooks/useGetCity";
 import useGetMyShop from "./hooks/useGetMyShop";
 import CreateEditShop from "./components/CreateEditShop";
 import AddItems from "./components/AddItems";
+import EditItem from "./components/EditItem";
+import useGetShopByCity from "./hooks/useGetShopById";
+import useGetItemsByCity from "./hooks/useGetItemsByCity";
 export const ServerUrl = "http://localhost:8000";
 
 const App = () => {
-  useGetCity()
-  useGetMyShop()
+  useGetCity();
+  useGetMyShop();
+  useGetShopByCity()
+  useGetItemsByCity()
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(true);
@@ -70,11 +75,17 @@ const App = () => {
       />
       <Route
         path="/create-edit-shop"
-        element={userData ? <CreateEditShop /> : <Navigate to="/signin" replace />}
+        element={
+          userData ? <CreateEditShop /> : <Navigate to="/signin" replace />
+        }
       />
       <Route
         path="/Add-food"
         element={userData ? <AddItems /> : <Navigate to="/signin" replace />}
+      />
+      <Route
+        path="/Edit-item/:itemId"
+        element={userData ? <EditItem /> : <Navigate to="/signin" replace />}
       />
     </Routes>
   );

@@ -48,14 +48,32 @@ export const createEditShop = async (req, res) => {
 
 export const getMyShop = async (req, res) => {
     try {
-        const shop = await Shop.findOne({ owner: req.userId }).populate("owner item")
+        const shop = await Shop.findOne({ owner: req.userId }).populate("owner").populate({
+            path: "item",
+            options: { sort: { updatedAt: -1 } }
+        })
         if (!shop) {
-            return null
+           return res.status(200).json(null);
         }
         return res.status(200).json(shop)
     } catch (error) {
         return res.status(500).json({ message: `getMyshop err ${error}` })
     }
+}
+
+export const getShopByCity = async(req,res) => {
+  try {
+    const {city} = req.params
+    const shops = await Shop.find({
+      city:{$regex:new RegExp(`^${city}$`,"i")}
+    }).populate("item")
+    if(!shops){
+      return res.status(400).json({message:" shop not found"})
+    }
+    return res.status(200).json(shops)
+  } catch (error) {
+    return res.status(500).json({ message: `getShopByCity err ${error}` })
+  }
 }
 
 

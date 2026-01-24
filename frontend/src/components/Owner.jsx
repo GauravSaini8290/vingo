@@ -7,6 +7,7 @@ import { FaPen } from "react-icons/fa";
 import OwnerItemCard from "./ownerItemCard";
 const Owner = () => {
   const navigate = useNavigate();
+  
   const { shopData } = useSelector((store) => store.owner);
 
   return (
