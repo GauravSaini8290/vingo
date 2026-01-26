@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
 import ForgetPassword from "./components/ForgetPassword";
@@ -15,13 +14,15 @@ import AddItems from "./components/AddItems";
 import EditItem from "./components/EditItem";
 import useGetShopByCity from "./hooks/useGetShopById";
 import useGetItemsByCity from "./hooks/useGetItemsByCity";
+import Cart from "./components/cartItems";
+import CheckOut from "./components/CheckOut";
 export const ServerUrl = "http://localhost:8000";
 
 const App = () => {
   useGetCity();
   useGetMyShop();
-  useGetShopByCity()
-  useGetItemsByCity()
+  useGetShopByCity();
+  useGetItemsByCity();
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(true);
@@ -35,6 +36,7 @@ const App = () => {
 
         dispatch(setUserData(res.data.user));
       } catch (error) {
+        console.log(error)
         dispatch(setUserData(null));
       } finally {
         setLoading(false);
@@ -86,6 +88,14 @@ const App = () => {
       <Route
         path="/Edit-item/:itemId"
         element={userData ? <EditItem /> : <Navigate to="/signin" replace />}
+      />
+      <Route
+        path="/cart"
+        element={userData ? <Cart /> : <Navigate to="/signin" replace />}
+      />
+      <Route
+        path="/checkOut"
+        element={userData ? <CheckOut /> : <Navigate to="/signin" replace />}
       />
     </Routes>
   );

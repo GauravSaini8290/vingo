@@ -13,6 +13,7 @@ import { MdOutlineReceiptLong } from "react-icons/md";
 
 const Navbar = () => {
   const { userData } = useSelector((state) => state.user);
+  const { cartItems } = useSelector((state) => state.user);
   const { location } = useSelector((state) => state.user);
   const { shopData } = useSelector((state) => state.owner);
   const dispatch = useDispatch();
@@ -117,10 +118,10 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <div className="relative cursor-pointer">
+            <div className="relative cursor-pointer" onClick={()=>navigate("/cart")}>
               <IoCartOutline size={25} className="text-[#ff4d2d]" />
               <span className="absolute right-[-9px] top-[-12px] text-[#ff4d2d]">
-                0
+                {cartItems.length}
               </span>
             </div>
 
