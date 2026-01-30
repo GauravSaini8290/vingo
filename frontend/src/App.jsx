@@ -16,6 +16,10 @@ import useGetShopByCity from "./hooks/useGetShopById";
 import useGetItemsByCity from "./hooks/useGetItemsByCity";
 import Cart from "./components/cartItems";
 import CheckOut from "./components/CheckOut";
+import OrderPlaced from "./components/OrderPlaced";
+import MyOrders from "./components/MyOrders";
+import useGetMyOrders from "./hooks/useGetMyOrders";
+
 export const ServerUrl = "http://localhost:8000";
 
 const App = () => {
@@ -23,6 +27,8 @@ const App = () => {
   useGetMyShop();
   useGetShopByCity();
   useGetItemsByCity();
+  useGetMyOrders();
+
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(true);
@@ -36,7 +42,7 @@ const App = () => {
 
         dispatch(setUserData(res.data.user));
       } catch (error) {
-        console.log(error)
+        console.log(error);
         dispatch(setUserData(null));
       } finally {
         setLoading(false);
@@ -96,6 +102,14 @@ const App = () => {
       <Route
         path="/checkOut"
         element={userData ? <CheckOut /> : <Navigate to="/signin" replace />}
+      />
+      <Route
+        path="/order-placed"
+        element={userData ? <OrderPlaced /> : <Navigate to="/signin" replace />}
+      />
+      <Route
+        path="/my-orders"
+        element={userData ? <MyOrders /> : <Navigate to="/signin" replace />}
       />
     </Routes>
   );

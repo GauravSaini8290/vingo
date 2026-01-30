@@ -19,7 +19,9 @@ const userSlice = createSlice({
         setShopsInMyCity: null,
         itemInMyCity: null,
         cartItems: getCartFromStorage(),
-        totalAmount: calculateTotalAmount(getCartFromStorage())
+        totalAmount: calculateTotalAmount(getCartFromStorage()),
+        myOrders: [],
+
     },
     reducers: {
         setUserData: (state, action) => {
@@ -63,9 +65,26 @@ const userSlice = createSlice({
             state.cartItems = [];
             localStorage.setItem("cartItems", JSON.stringify([]));
             state.totalAmount = 0;
+        },
+        setMyOrders: (state, action) => {
+            state.myOrders = action.payload
+        },
+        addMyOrder: (state, action) => {
+            state.myOrders = [action.payload, ...state.myOrders]
+        },
+        updateOrderStatus: (state, action) => {
+            const { orderId, shopId, status } = action.payload
+
+            const order = state.myOrders.find(o => o._id === orderId)
+            if (!order) return
+
+            if (order.shopOrders && order.shopOrders.shop._id === shopId) {
+                order.shopOrders.status = status
+            }
         }
+
     }
 });
 
-export const { setUserData, setCity, setstate, setCurrentAddress, setShopsInCity, setItemsInCity, addToCart, removeFromCart, clearCart } = userSlice.actions;
+export const { setUserData, setCity, setstate, setCurrentAddress, setShopsInCity, setItemsInCity, addToCart, removeFromCart, clearCart, setMyOrders, addMyOrder, updateOrderStatus } = userSlice.actions;
 export default userSlice.reducer;

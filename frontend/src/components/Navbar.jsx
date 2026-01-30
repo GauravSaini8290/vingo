@@ -101,14 +101,20 @@ const Navbar = () => {
               </>
             )}
 
-            <div className="hidden md:flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-[#ff4d2d]/10  text-[#ff4d2d] font-medium">
+            <div
+              className="hidden md:flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-[#ff4d2d]/10  text-[#ff4d2d] font-medium"
+              onClick={() => navigate("/my-orders")}
+            >
               <MdOutlineReceiptLong size={20} className="text-[#ff4d2d]" />
               <span className="">My Orders</span>
               <span className="absolute -right-2 -top-2 text-xs font-bold text-white bg-[#ff4d2d] rounded-full px-[6px] py-[1px] ">
                 0
               </span>
             </div>
-            <div className="md:hidden flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-[#ff4d2d]/10  text-[#ff4d2d] font-medium">
+            <div
+              className="md:hidden flex items-center gap-2 cursor-pointer relative px-3 py-1 rounded-lg bg-[#ff4d2d]/10  text-[#ff4d2d] font-medium"
+              onClick={() => navigate("/my-orders")}
+            >
               <MdOutlineReceiptLong size={20} className="text-[#ff4d2d]" />
 
               <span className="absolute -right-2 -top-2 text-xs font-bold text-white bg-[#ff4d2d] rounded-full px-[6px] py-[1px] ">
@@ -118,14 +124,21 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <div className="relative cursor-pointer" onClick={()=>navigate("/cart")}>
-              <IoCartOutline size={25} className="text-[#ff4d2d]" />
-              <span className="absolute right-[-9px] top-[-12px] text-[#ff4d2d]">
-                {cartItems.length}
-              </span>
-            </div>
-
-            <button className="hidden md:block px-3 py-1 rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] text-sm font-medium ">
+            {userData.role === "user" && (
+              <div
+                className="relative cursor-pointer"
+                onClick={() => navigate("/cart")}
+              >
+                <IoCartOutline size={25} className="text-[#ff4d2d]" />
+                <span className="absolute right-[-9px] top-[-12px] text-[#ff4d2d]">
+                  {cartItems.length}
+                </span>
+              </div>
+            )}
+            <button
+              className="hidden md:block px-3 py-1 rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] text-sm font-medium "
+              onClick={() => navigate("/my-orders")}
+            >
               My Order
             </button>
           </>
@@ -138,11 +151,16 @@ const Navbar = () => {
           {userData?.fullName.slice(0, 1)}
         </div>
         {showInfo && (
-          <div className="fixed top-[80px] right-[10px] md:right-[25%]  w-[180px] lg-right-[25%] bg-white shadow-xl rounded-xl p-[20px] flex flex-col gap-[10px] z-[9999]">
+          <div
+            className={`fixed top-[80px] right-[10px] ${userData.role === "deliveryBoy" ? "md:right-[30%] lg-right-[40%]" : "md:right-[25%]   lg-right-[25%]"} w-[180px]  bg-white shadow-xl rounded-xl p-[20px] flex flex-col gap-[10px] z-[9999]`}
+          >
             <div className="text-[17px] font-semibold">
               {userData?.fullName}
             </div>
-            <div className="md:hidden text-[#ff4d2d] font-semibold cursor-pointer">
+            <div
+              className="md:hidden text-[#ff4d2d] font-semibold cursor-pointer"
+              onClick={() => navigate("/my-orders")}
+            >
               My Order
             </div>
             <div

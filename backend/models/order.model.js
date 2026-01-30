@@ -3,8 +3,10 @@ import mongoose from "mongoose";
 const shopOrderItemSchema = new mongoose.Schema({
     item: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Item"
+        ref: "Item",
+        required: true
     },
+    name: String,
     price: Number,
     quantity: Number
 }, { timestamps: true })
@@ -18,8 +20,23 @@ const shopOrderSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
-    subtotal: Number,
-    shopOrderItems: [shopOrderItemSchema]
+    subTotal: Number,
+    shopOrderItems: [shopOrderItemSchema],
+    status: {
+        type: String,
+        enum: ["pending", "preparing", "out of delivery"],
+        default: "pending"
+    },
+    assignment: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "DeliveryAssignment",
+        default: null
+    },
+    assignedDeliveryBoy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }
+
 }, { timestamps: true })
 const orderSchema = new mongoose.Schema({
     user: {
@@ -39,7 +56,7 @@ const orderSchema = new mongoose.Schema({
     totalAmount: {
         type: Number
     },
-    shopOrder: [shopOrderSchema]
+    shopOrders: [shopOrderSchema]
 }, { timestamps: true })
-const Order = mongoose.model("Order" , orderSchema)
+const Order = mongoose.model("Order", orderSchema)
 export default Order

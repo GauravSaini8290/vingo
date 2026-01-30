@@ -6,18 +6,36 @@ export const getCurrentUser = async (req, res) => {
             return res.status(400).json({ message: " user id  not found" })
         }
         const user = await User.findById(userId)
-        if(!user) {
+        if (!user) {
             return res.status(400).json({ message: " user  not found" })
         }
         return res.status(200).json({
-  user: {
-    id: user._id,
-    fullName: user.fullName,
-    email: user.email,
-    role: user.role
-  }
-})
+            user: {
+                id: user._id,
+                fullName: user.fullName,
+                email: user.email,
+                role: user.role,
+                location: user.location
+            }
+        })
     } catch (error) {
-return res.status(400).json({ message: ` get current user error ${error}` })
+        return res.status(400).json({ message: ` get current user error ${error}` })
     }
 }
+
+export const updateUserLocation = async (req, res) => {
+    try {
+        const { lat, lon } = req.body
+        const user = await User.findByIdAndUpdate(req.userId, {
+            location: {
+                type: "Point",
+                coordinates: [lon, lat]
+            }
+        }, { new: true })
+        if (!user) {
+            return res.status(400).json({ message: ` user is not found ${error}` })
+        }
+    } catch (error) {
+        return res.status(400).json({ message: ` update location error ${error}` })
+    }
+} 

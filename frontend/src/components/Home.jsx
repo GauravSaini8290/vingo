@@ -3,8 +3,10 @@ import { useSelector } from "react-redux";
 import UserDashbord from "./UserDashbord";
 import Owner from "./owner";
 import DeliveryBoy from "./deliveryBoy";
-
+import useUpdateLocation from "../hooks/useUpdateLocation"
 const Home = () => {
+  useUpdateLocation()
+  
   const { userData } = useSelector((state) => state.user);
   return (
     <div className="w-[100vw] min-h-[100vh] pt-[100px] flex flex-col items-center bg-[#fff9f6]">

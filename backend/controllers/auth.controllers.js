@@ -37,6 +37,7 @@ export const SignUp = async (req, res) => {
                 fullName: user.fullName,
                 email: user.email,
                 role: user.role,
+                location: user.location
             },
         });
 
@@ -76,6 +77,7 @@ export const SignIn = async (req, res) => {
                 fullName: findUser.fullName,
                 email: findUser.email,
                 role: findUser.role,
+                location: findUser.location
             },
         });
     } catch (error) {
@@ -187,6 +189,7 @@ export const GoogleAuth = async (req, res) => {
                 fullName: user.fullName,
                 email: user.email,
                 role: user.role,
+                location: user.location
             },
         });
     } catch (error) {
