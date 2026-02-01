@@ -10,5 +10,9 @@ export const store = configureStore({
         owner: ownerSlice,
         item: itemSlice,
         map: mapSlice
-    }
+    },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: false, // Isse socket object store karne par error nahi aayega
+        })
 })

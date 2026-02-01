@@ -137,3 +137,46 @@ export const getItemByCity = async (req, res) => {
     }
 }
 
+export const getItemsByShop = async (req, res) => {
+    try {
+        const { shopId } = req.params
+        const shop = await Shop.findById(shopId).populate("item")
+        if (!shop) {
+            return res.status(400).json({ message: "shop is not found" })
+
+        }
+        return res.status(200).json({ shop, item: shop.item })
+    } catch (error) {
+        return res.status(500).json({
+            message: `getItemByShop error: ${error.message}`
+        });
+    }
+}
+export const serchItem = async (req, res) => {
+    try {
+        const { query, city } = req.query
+        if (!query || !city) {
+            return res.status(400).json({ message: "query\city not found" })
+        }
+        const shops = await Shop.find({
+            city: { $regex: new RegExp(`^${city}$`, "i") }
+        }).populate("item")
+        if (!shops) {
+            return res.status(400).json({ message: " shop not found" })
+        }
+        const shopIds = shops.map(s => s._id)
+        const items = await Item.find({
+            shop: { $in: shopIds },
+            $or: [
+                { name: { $regex: query, $options: "i" } },
+                { category: { $regex: query, $options: "i" } }
+            ]
+        }).populate("shop", "name image")
+        return res.status(200).json(items)
+    } catch (error) {
+        return res.status(500).json({
+            message: `serchItem error: ${error.message}`
+        });
+    }
+}
+

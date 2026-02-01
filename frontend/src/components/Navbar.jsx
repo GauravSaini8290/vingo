@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CiLocationOn } from "react-icons/ci";
 import { IoMdSearch } from "react-icons/io";
 import { IoCartOutline } from "react-icons/io5";
@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RxCross1 } from "react-icons/rx";
 import axios from "axios";
 import { ServerUrl } from "../App";
-import { setUserData } from "../redux/userSlice";
+import { setSerchItems, setUserData } from "../redux/userSlice";
 import { useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import { MdOutlineReceiptLong } from "react-icons/md";
@@ -20,6 +20,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [showInfo, setshowInfo] = useState(false);
   const [showSearch, setshowSearch] = useState(false);
+  const [query, setQuery] = useState("");
 
   const handleLogout = async () => {
     try {
@@ -32,6 +33,24 @@ const Navbar = () => {
       console.log(error);
     }
   };
+  const handlesearchItems = async () => {
+    try {
+      const res = await axios.get(
+        `${ServerUrl}/api/item/search-items?query=${query}&city=${location}`,
+        { withCredentials: true },
+      );
+      dispatch(setSerchItems(res.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    if (query) {
+      handlesearchItems();
+    } else {
+      dispatch(setSerchItems(null));
+    }
+  }, [query]);
   return (
     <div className="w-full h-[80px] flex items-center justify-between md:justify-center gap-[30px] px-[20px] fixed top-0 z-[9999] bg-[#fff9f6]  overflow-visible">
       {showSearch && userData.role === "user" && (
@@ -46,6 +65,10 @@ const Navbar = () => {
               type="text"
               placeholder="search"
               className="px-[10px] text-gray-700 outline-0 w-full"
+              onChange={(e) => {
+                setQuery(e.target.value);
+              }}
+              value={query}
             />
           </div>
         </div>
@@ -63,6 +86,10 @@ const Navbar = () => {
               type="text"
               placeholder="search"
               className="px-[10px] text-gray-700 outline-0 w-full"
+              onChange={(e) => {
+                setQuery(e.target.value);
+              }}
+              value={query}
             />
           </div>
         </div>
