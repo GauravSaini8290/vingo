@@ -6,7 +6,6 @@ import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
 import ForgetPassword from "./components/ForgetPassword";
 import Home from "./components/Home";
-
 import useGetCity from "./hooks/useGetCity";
 import useGetMyShop from "./hooks/useGetMyShop";
 import CreateEditShop from "./components/CreateEditShop";
@@ -18,7 +17,6 @@ import Cart from "./components/cartItems";
 import CheckOut from "./components/CheckOut";
 import OrderPlaced from "./components/OrderPlaced";
 import MyOrders from "./components/MyOrders";
-import useGetMyOrders from "./hooks/useGetMyOrders";
 import TrackOrderPage from "./components/TrackOrderPage";
 import Shop from "./components/Shop";
 import { io } from "socket.io-client";
@@ -28,14 +26,12 @@ export const ServerUrl = "http://localhost:8000";
 const App = () => {
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.user);
-  console.log(userData)
+  const [loading, setLoading] = useState(true);
   useGetCity();
   useGetMyShop();
   useGetShopByCity();
   useGetItemsByCity();
-  useGetMyOrders();
 
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -56,27 +52,26 @@ const App = () => {
     fetchCurrentUser();
   }, [dispatch]);
 
- useEffect(() => {
-  // Jab userData null na ho, tabhi socket connect karein
-  if (!userData || !userData.id) return; 
+  // useEffect(() => {
+  //   // Jab userData null na ho, tabhi socket connect karein
+  //   if (!userData || !userData.id) return;
 
-  const socketInstance = io(ServerUrl, { 
-    withCredentials: true,
-    transports: ['websocket'] // Stable connection ke liye
-  });
+  //   const socketInstance = io(ServerUrl, {
+  //     withCredentials: true,
+  //     transports: ["websocket"], // Stable connection ke liye
+  //   });
 
-  socketInstance.on("connect", () => {
-    
-    // Identity emit karein
-    socketInstance.emit("identity", { userId: userData.id });
-  });
+  //   socketInstance.on("connect", () => {
+  //     // Identity emit karein
+  //     socketInstance.emit("identity", { userId: userData.id });
+  //   });
 
-  dispatch(setSocket(socketInstance));
+  //   dispatch(setSocket(socketInstance));
 
-  return () => {
-    socketInstance.disconnect();
-  };
-}, [userData?.id]); // id change hone par ya login hone par trigger hoga
+  //   return () => {
+  //     socketInstance.disconnect();
+  //   };
+  // }, [userData?.id]); // id change hone par ya login hone par trigger hoga
 
   if (loading) {
     return (
@@ -152,3 +147,6 @@ const App = () => {
 };
 
 export default App;
+
+
+

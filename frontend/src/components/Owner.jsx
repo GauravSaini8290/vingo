@@ -98,7 +98,7 @@ const Owner = () => {
         </div>
       )}
       {shopData?.item?.length > 0 && (
-        <div className="flex flex-col items-center gap-4 w-full max-w-3xl mt-6">
+        <div className="flex flex-col items-center gap-4 w-full max-w-3xl my-6">
           {shopData?.item.map((i, index) => (
             <OwnerItemCard key={index} Item={i} />
           ))}

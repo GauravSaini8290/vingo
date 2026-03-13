@@ -12,7 +12,7 @@ const OrderPlaced = () => {
         Thank you for your purchase. your order is being prepared you can track
         your order status in the "My Order section"{" "}
       </p>
-      <button className="bg-[#ff4d2d] hover:bg-[#e64526] text-white px-6 py-3 rounded-lg text-lg font-medium transition cursor-pointer" onClick={() => navigate("/my-orders")}> Back  to My Orders</button>
+      <button className="bg-[#ff4d2d] hover:bg-[#e64526] text-white px-6 py-3 rounded-lg text-lg font-medium transition cursor-pointer" onClick={() => navigate("/")}> Home</button>
     </div>
   );
 };

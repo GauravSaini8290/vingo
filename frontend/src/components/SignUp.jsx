@@ -19,7 +19,7 @@ const SignUp = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [mobile, setMobile] = useState("8290580838");
+  const [mobile, setMobile] = useState("");
   const [role, setRole] = useState("user");
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");

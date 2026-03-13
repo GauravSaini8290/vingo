@@ -13,7 +13,7 @@ import "leaflet/dist/leaflet.css";
 import { setAddress, setLocation } from "../redux/mapSlice";
 import axios from "axios";
 import { ServerUrl } from "../App";
-import { addMyOrder } from "../redux/userSlice";
+import { addMyOrder, clearCart } from "../redux/userSlice";
 const RecenterMap = ({ location }) => {
   const map = useMap();
 
@@ -91,6 +91,7 @@ const CheckOut = () => {
       );
       dispatch(addMyOrder(res.data));
       navigate("/order-placed");
+      dispatch(clearCart())
     } catch (error) {
       console.log(error);
     }
